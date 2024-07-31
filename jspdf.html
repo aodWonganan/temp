@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF from HTML with jsPDF</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/paper-css/0.4.1/paper.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <style>
+        @page { size: A4; margin: 0; }
+    </style>
+</head>
+<body class="A4">
+    <button onclick="generatePDF()">Export to PDF</button>
+    <div class="export">
+        <section class="sheet padding-10mm">
+            <h1 class="text-center">Hello, Paper CSS!</h1>
+            <p>This is a sample paragraph styled with Paper CSS. Visit <a href="https://www.example.com" target="_blank">Example</a>.</p>
+        </section>
+        <section class="sheet padding-10mm" style="background: red;">
+            <h1 class="text-center">Another Page!</h1>
+            <p>This is another sample paragraph styled with Paper CSS. Visit <a href="https://www.example.com" target="_blank">Example</a>.</p>
+        </section>
+    </div>
+
+    <script>
+        const { jsPDF } = window.jspdf;
+
+        async function generatePDF() {
+            const pdf = new jsPDF();
+
+            const sections = document.querySelectorAll('.export .sheet');
+            for (let i = 0; i < sections.length; i++) {
+                await pdf.html(sections[i], {
+                    callback: function (doc) {
+                        if (i < sections.length - 1) {
+                            doc.addPage();
+                        } else {
+                            doc.save('document.pdf');
+                        }
+                    },
+                    x: 10,
+                    y: 10
+                });
+            }
+        }
+    </script>
+</body>
+</html>
